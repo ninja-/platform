@@ -82,6 +82,18 @@ export default class PostsView extends React.Component {
         const userId = UserStore.getCurrentId();
 
         let renderedLastViewed = false;
+        const commentCounts = new Map();
+
+        for (let x = order.length - 1; x >= 0; x--) {
+            const post = posts[order[x]];
+            const prevPost = posts[order[x + 1]];
+
+            // fast-path for counting comments
+            if (prevPost && Utils.isComment(post)) {
+                var count = commentCounts.get(post.parent_id) || 0;
+                commentCounts.set(post.parent_id, count + 1);
+            }
+        }
 
         for (let i = order.length - 1; i >= 0; i--) {
             const post = posts[order[i]];
@@ -162,6 +174,7 @@ export default class PostsView extends React.Component {
             const keyPrefix = post.id ? post.id : i;
 
             const shouldHighlight = this.props.postsToHighlight && this.props.postsToHighlight.hasOwnProperty(post.id);
+            const commentCount = post.parent_id ? commentCounts.get(post.parent_id) : commentCounts.get(post.id);
 
             const postCtl = (
                 <Post
@@ -175,6 +188,7 @@ export default class PostsView extends React.Component {
                     hideProfilePic={hideProfilePic}
                     isLastComment={isLastComment}
                     shouldHighlight={shouldHighlight}
+                    commentCount={commentCount}
                     onClick={() => EventHelpers.emitPostFocusEvent(post.id)} //eslint-disable-line no-loop-func
                     displayNameType={this.state.displayNameType}
                 />

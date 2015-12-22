@@ -91,35 +91,36 @@ export default class Post extends React.Component {
             return true;
         }
 
-        if (this.getCommentCount(nextProps) !== this.getCommentCount(this.props)) {
+        if (nextProps.shouldHighlight !== this.props.shouldHighlight) {
             return true;
         }
 
-        if (nextProps.shouldHighlight !== this.props.shouldHighlight) {
+        if (this.getCommentCount(nextProps) !== this.getCommentCount(this.props)) {
             return true;
         }
 
         return false;
     }
     getCommentCount(props) {
-        const post = props.post;
-        const parentPost = props.parentPost;
-        const posts = props.posts;
-
-        let commentCount = 0;
-        let commentRootId;
-        if (parentPost) {
-            commentRootId = post.root_id;
-        } else {
-            commentRootId = post.id;
-        }
-        for (const postId in posts) {
-            if (posts[postId].root_id === commentRootId) {
-                commentCount += 1;
-            }
-        }
-
-        return commentCount;
+        // const post = props.post;
+        // const parentPost = props.parentPost;
+        // const posts = props.posts;
+        //
+        // let commentCount = 0;
+        // let commentRootId;
+        // if (parentPost) {
+        //     commentRootId = post.root_id;
+        // } else {
+        //     commentRootId = post.id;
+        // }
+        // for (const postId in posts) {
+        //     if (posts[postId].root_id === commentRootId) {
+        //         commentCount += 1;
+        //     }
+        // }
+        //
+        // return commentCount;
+        return props.commentCount || 0; // handled at posts_view
     }
     render() {
         const post = this.props.post;
