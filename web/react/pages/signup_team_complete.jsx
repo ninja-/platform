@@ -1,11 +1,11 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import SignupTeamComplete from '../components/signup_team_complete.jsx';
+import TeamSignupComplete from '../components/team_signup/team_signup_complete.jsx';
 
 function setupSignupTeamCompletePage(props) {
     ReactDOM.render(
-        <SignupTeamComplete
+        <TeamSignupComplete
             email={props.Email}
             hash={props.Hash}
             data={props.Data}

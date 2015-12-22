@@ -4,9 +4,9 @@
 import ChoosePage from './team_signup_choose_auth.jsx';
 import EmailSignUpPage from './team_signup_with_email.jsx';
 import SSOSignupPage from './team_signup_with_sso.jsx';
-import Constants from '../utils/constants.jsx';
+import Constants from '../../utils/constants.jsx';
 
-export default class TeamSignUp extends React.Component {
+export default class TeamSignup extends React.Component {
     constructor(props) {
         super(props);
 
@@ -127,7 +127,6 @@ export default class TeamSignUp extends React.Component {
     }
 }
 
-TeamSignUp.propTypes = {
+TeamSignup.propTypes = {
     teams: React.PropTypes.array
 };
-

@@ -2,7 +2,7 @@
 // See License.txt for license information.
 
 import EmailItem from './team_signup_email_item.jsx';
-import * as Client from '../utils/client.jsx';
+import * as Client from '../../utils/client.jsx';
 
 export default class TeamSignupSendInvitesPage extends React.Component {
     constructor(props) {
