@@ -1,18 +1,18 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import * as Utils from '../utils/utils.jsx';
-import * as client from '../utils/client.jsx';
-import UserStore from '../stores/user_store.jsx';
-import TeamStore from '../stores/team_store.jsx';
-import * as EventHelpers from '../dispatcher/event_helpers.jsx';
+import * as Utils from '../../utils/utils.jsx';
+import * as client from '../../utils/client.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import TeamStore from '../../stores/team_store.jsx';
+import * as EventHelpers from '../../dispatcher/event_helpers.jsx';
 
-import AboutBuildModal from './about_build_modal.jsx';
-import TeamMembersModal from './team_members_modal.jsx';
-import ToggleModalButton from './toggle_modal_button.jsx';
-import UserSettingsModal from './user_settings/user_settings_modal.jsx';
+import AboutBuildModal from '../about_build_modal.jsx';
+import TeamMembersModal from '../team_members_modal.jsx';
+import ToggleModalButton from '../toggle_modal_button.jsx';
+import UserSettingsModal from '../user_settings/user_settings_modal.jsx';
 
-import Constants from '../utils/constants.jsx';
+import Constants from '../../utils/constants.jsx';
 
 function getStateFromStores() {
     const teams = [];
@@ -27,7 +27,7 @@ function getStateFromStores() {
     return {teams};
 }
 
-export default class NavbarDropdown extends React.Component {
+export default class SidebarHeaderDropdown extends React.Component {
     constructor(props) {
         super(props);
         this.blockToggle = false;
@@ -283,10 +283,10 @@ export default class NavbarDropdown extends React.Component {
     }
 }
 
-NavbarDropdown.defaultProps = {
+SidebarHeaderDropdown.defaultProps = {
     teamType: ''
 };
-NavbarDropdown.propTypes = {
+SidebarHeaderDropdown.propTypes = {
     teamType: React.PropTypes.string,
     teamDisplayName: React.PropTypes.string,
     teamName: React.PropTypes.string

@@ -1,14 +1,14 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import NavbarDropdown from './navbar_dropdown.jsx';
-import TutorialTip from './tutorial/tutorial_tip.jsx';
+import SidebarHeaderDropdown from './sidebar_header_dropdown.jsx';
+import TutorialTip from '../tutorial/tutorial_tip.jsx';
 
-import UserStore from '../stores/user_store.jsx';
-import PreferenceStore from '../stores/preference_store.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import PreferenceStore from '../../stores/preference_store.jsx';
 
-import * as Utils from '../utils/utils.jsx';
-import Constants from '../utils/constants.jsx';
+import * as Utils from '../../utils/utils.jsx';
+import Constants from '../../utils/constants.jsx';
 const Preferences = Constants.Preferences;
 const TutorialSteps = Constants.TutorialSteps;
 
@@ -124,7 +124,7 @@ export default class SidebarHeader extends React.Component {
                         </OverlayTrigger>
                     </div>
                 </a>
-                <NavbarDropdown
+                <SidebarHeaderDropdown
                     ref='dropdown'
                     teamType={this.props.teamType}
                     teamDisplayName={this.props.teamDisplayName}

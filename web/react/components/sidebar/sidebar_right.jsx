@@ -1,13 +1,21 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import SearchResults from './search_results.jsx';
-import RhsThread from './rhs_thread.jsx';
-import SearchStore from '../stores/search_store.jsx';
-import PostStore from '../stores/post_store.jsx';
-import * as Utils from '../utils/utils.jsx';
+import SearchResults from '../search_results.jsx';
+import RhsThread from '../rhs_thread.jsx';
+import SearchStore from '../../stores/search_store.jsx';
+import PostStore from '../../stores/post_store.jsx';
+import * as Utils from '../../utils/utils.jsx';
 
 const SIDEBAR_SCROLL_DELAY = 500;
+
+// this component provides search results on the right side of the UI
+// and can be overriden by open RHS comment thread
+
+// it will switch between displaying RHS comment thread and search results
+// based on current state
+
+// TODO: move to rhs?
 
 export default class SidebarRight extends React.Component {
     constructor(props) {

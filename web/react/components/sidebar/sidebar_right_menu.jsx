@@ -1,13 +1,18 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import TeamMembersModal from './team_members_modal.jsx';
-import ToggleModalButton from './toggle_modal_button.jsx';
-import UserSettingsModal from './user_settings/user_settings_modal.jsx';
-import UserStore from '../stores/user_store.jsx';
-import * as client from '../utils/client.jsx';
-import * as EventHelpers from '../dispatcher/event_helpers.jsx';
-import * as utils from '../utils/utils.jsx';
+import TeamMembersModal from '../team_members_modal.jsx';
+import ToggleModalButton from '../toggle_modal_button.jsx';
+import UserSettingsModal from '../user_settings/user_settings_modal.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import * as client from '../../utils/client.jsx';
+import * as EventHelpers from '../../dispatcher/event_helpers.jsx';
+import * as utils from '../../utils/utils.jsx';
+
+// this component "replaces" sidebar_header and sidebar_header_dropdown
+// and provides a user menu on mobile (on the right side instead)
+
+// TODO: move to rhs?
 
 export default class SidebarRightMenu extends React.Component {
     componentDidMount() {
