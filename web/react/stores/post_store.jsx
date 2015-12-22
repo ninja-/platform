@@ -198,7 +198,9 @@ class PostStoreClass extends EventEmitter {
 
     getVisiblePosts(id) {
         if (this.postsInfo.hasOwnProperty(id) && this.postsInfo[id].hasOwnProperty('postList')) {
-            const postList = JSON.parse(JSON.stringify(this.postsInfo[id].postList));
+            const postList = {};
+            postList.order = this.postsInfo[id].postList.order.slice();
+            postList.posts = Object.assign({}, this.postsInfo[id].postList.posts);
 
             // Only limit visibility if we are not focused on a post
             if (this.currentFocusedPostId === null) {
@@ -221,16 +223,7 @@ class PostStoreClass extends EventEmitter {
                     }
                 }
 
-                // Merge would be faster
-                postList.order.sort((a, b) => {
-                    if (postList.posts[a].create_at > postList.posts[b].create_at) {
-                        return -1;
-                    }
-                    if (postList.posts[a].create_at < postList.posts[b].create_at) {
-                        return 1;
-                    }
-                    return 0;
-                });
+                this.mergeSort(postList, postList.order);
             }
 
             return postList;
@@ -299,19 +292,56 @@ class PostStoreClass extends EventEmitter {
             }
         }
 
-        combinedPosts.order.sort((a, b) => {
-            if (combinedPosts.posts[a].create_at > combinedPosts.posts[b].create_at) {
-                return -1;
-            }
-            if (combinedPosts.posts[a].create_at < combinedPosts.posts[b].create_at) {
-                return 1;
-            }
-
-            return 0;
-        });
+        this.mergeSort(combinedPosts, combinedPosts.order);
 
         this.makePostsInfo(id);
         this.postsInfo[id].postList = combinedPosts;
+    }
+
+    /**
+     * Merges to arrays in order based on their natural
+     * relationship.
+     * @param {Array} left The first array to merge.
+     * @param {Array} right The second array to merge.
+     * @return {Array} The merged array.
+     */
+    merge(orig, left, right) {
+        var result = [];
+        var il = 0;
+        var ir = 0;
+
+        while (il < left.length && ir < right.length) {
+            console
+            if (orig.posts[left[il]].create_at > orig.posts[right[ir]].create_at) {
+                result.push(left[il++]);
+            } else {
+                result.push(right[ir++]);
+            }
+        }
+
+        return result.concat(left.slice(il)).concat(right.slice(ir));
+    }
+
+    /**
+     * Sorts an array in ascending natural order using
+     * merge sort.
+     * @param {Array} items The array to sort.
+     * @return {Array} The sorted array.
+     */
+    mergeSort(orig, items) {
+        if (items.length < 2) {
+            return items;
+        }
+
+        var middle = Math.floor(items.length / 2);
+        var left = items.slice(0, middle);
+        var right = items.slice(middle);
+        var params = this.merge(orig, this.mergeSort(orig, left), this.mergeSort(orig, right));
+
+        // Add the arguments to replace everything between 0 and last item in the array
+        params.unshift(0, items.length);
+        items.splice(items, params);
+        return items;
     }
 
     storePost(post) {
