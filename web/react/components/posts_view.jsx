@@ -198,7 +198,7 @@ export default class PostsView extends React.Component {
             if (currentPostDay.toDateString() !== previousPostDay.toDateString()) {
                 postCtls.push(
                     <div
-                        key={currentPostDay.toDateString()}
+                        key={'seperatorAfter'+post.id}
                         className='date-separator'
                     >
                         <hr className='separator__hr' />

@@ -207,11 +207,11 @@ export default class RhsThread extends React.Component {
                             commentCount={postsArray.length}
                         />
                         <div className='post-right-comments-container'>
-                        {postsArray.map(function mapPosts(comPost) {
+                        {postsArray.map(function mapPosts(comPost, i) {
                             return (
                                 <Comment
                                     ref={comPost.id}
-                                    key={comPost.id + 'commentKey'}
+                                    key={(comPost.id ? comPost.id : i) + "commentKey"}
                                     post={comPost}
                                     selected={(comPost.id === selectedPost.id)}
                                 />
