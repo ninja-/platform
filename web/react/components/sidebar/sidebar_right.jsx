@@ -2,7 +2,7 @@
 // See License.txt for license information.
 
 import SearchResults from '../search_results.jsx';
-import RhsThread from '../rhs_thread.jsx';
+import RhsThread from '../rhs/rhs_thread.jsx';
 import SearchStore from '../../stores/search_store.jsx';
 import PostStore from '../../stores/post_store.jsx';
 import * as Utils from '../../utils/utils.jsx';

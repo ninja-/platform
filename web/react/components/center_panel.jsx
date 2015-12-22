@@ -6,7 +6,7 @@ import CreatePost from './create_post.jsx';
 import PostsViewContainer from './posts_view_container.jsx';
 import PostFocusView from './post_focus_view.jsx';
 import ChannelHeader from './channel_header.jsx';
-import Navbar from './navbar.jsx';
+import Navbar from './navbar/navbar.jsx';
 import FileUploadOverlay from './file_upload_overlay.jsx';
 
 import PreferenceStore from '../stores/preference_store.jsx';
