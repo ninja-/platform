@@ -3,7 +3,7 @@
 
 import EmailVerify from '../components/email_verify.jsx';
 
-global.window.setupVerifyPage = function setupVerifyPage(props) {
+function setupVerifyPage(props) {
     ReactDOM.render(
         <EmailVerify
             isVerified={props.IsVerified}
@@ -14,3 +14,5 @@ global.window.setupVerifyPage = function setupVerifyPage(props) {
         document.getElementById('verify')
     );
 };
+
+global.window.setupVerifyPage = setupVerifyPage;
