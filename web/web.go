@@ -79,8 +79,6 @@ func InitWeb() {
 	mainrouter.Handle("/admin_console/{tab:[A-Za-z0-9-_]+}", api.UserRequired(adminConsole)).Methods("GET")
 	mainrouter.Handle("/admin_console/{tab:[A-Za-z0-9-_]+}/{team:[A-Za-z0-9-]*}", api.UserRequired(adminConsole)).Methods("GET")
 
-	mainrouter.Handle("/hooks/{id:[A-Za-z0-9]+}", api.ApiAppHandler(incomingWebhook)).Methods("POST")
-
 	mainrouter.Handle("/docs/{doc:[A-Za-z0-9]+}", api.AppHandlerIndependent(docs)).Methods("GET")
 
 	// ----------------------------------------------------------------------------------------------
@@ -1070,105 +1068,4 @@ func getAccessToken(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	c.LogAuditWithUserId(user.Id, "success")
 
 	w.Write([]byte(accessRsp.ToJson()))
-}
-
-func incomingWebhook(c *api.Context, w http.ResponseWriter, r *http.Request) {
-	if !utils.Cfg.ServiceSettings.EnableIncomingWebhooks {
-		c.Err = model.NewAppError("incomingWebhook", "Incoming webhooks have been disabled by the system admin.", "")
-		c.Err.StatusCode = http.StatusNotImplemented
-		return
-	}
-
-	params := mux.Vars(r)
-	id := params["id"]
-
-	hchan := api.Srv.Store.Webhook().GetIncoming(id)
-
-	r.ParseForm()
-
-	var parsedRequest *model.IncomingWebhookRequest
-	if r.Header.Get("Content-Type") == "application/json" {
-		parsedRequest = model.IncomingWebhookRequestFromJson(r.Body)
-	} else {
-		parsedRequest = model.IncomingWebhookRequestFromJson(strings.NewReader(r.FormValue("payload")))
-	}
-
-	if parsedRequest == nil {
-		c.Err = model.NewAppError("incomingWebhook", "Unable to parse incoming data", "")
-		return
-	}
-
-	text := parsedRequest.Text
-	if len(text) == 0 && parsedRequest.Attachments == nil {
-		c.Err = model.NewAppError("incomingWebhook", "No text specified", "")
-		return
-	}
-
-	channelName := parsedRequest.ChannelName
-	webhookType := parsedRequest.Type
-
-	//attachments is in here for slack compatibility
-	if parsedRequest.Attachments != nil {
-		if len(parsedRequest.Props) == 0 {
-			parsedRequest.Props = make(model.StringInterface)
-		}
-		parsedRequest.Props["attachments"] = parsedRequest.Attachments
-		webhookType = model.POST_SLACK_ATTACHMENT
-	}
-
-	var hook *model.IncomingWebhook
-	if result := <-hchan; result.Err != nil {
-		c.Err = model.NewAppError("incomingWebhook", "Invalid webhook", "err="+result.Err.Message)
-		return
-	} else {
-		hook = result.Data.(*model.IncomingWebhook)
-	}
-
-	var channel *model.Channel
-	var cchan store.StoreChannel
-
-	if len(channelName) != 0 {
-		if channelName[0] == '@' {
-			if result := <-api.Srv.Store.User().GetByUsername(hook.TeamId, channelName[1:]); result.Err != nil {
-				c.Err = model.NewAppError("incomingWebhook", "Couldn't find the user", "err="+result.Err.Message)
-				return
-			} else {
-				channelName = model.GetDMNameFromIds(result.Data.(*model.User).Id, hook.UserId)
-			}
-		} else if channelName[0] == '#' {
-			channelName = channelName[1:]
-		}
-
-		cchan = api.Srv.Store.Channel().GetByName(hook.TeamId, channelName)
-	} else {
-		cchan = api.Srv.Store.Channel().Get(hook.ChannelId)
-	}
-
-	overrideUsername := parsedRequest.Username
-	overrideIconUrl := parsedRequest.IconURL
-
-	if result := <-cchan; result.Err != nil {
-		c.Err = model.NewAppError("incomingWebhook", "Couldn't find the channel", "err="+result.Err.Message)
-		return
-	} else {
-		channel = result.Data.(*model.Channel)
-	}
-
-	pchan := api.Srv.Store.Channel().CheckPermissionsTo(hook.TeamId, channel.Id, hook.UserId)
-
-	// create a mock session
-	c.Session = model.Session{UserId: hook.UserId, TeamId: hook.TeamId, IsOAuth: false}
-
-	if !c.HasPermissionsToChannel(pchan, "createIncomingHook") && channel.Type != model.CHANNEL_OPEN {
-		c.Err = model.NewAppError("incomingWebhook", "Inappropriate channel permissions", "")
-		return
-	}
-
-	if _, err := api.CreateWebhookPost(c, channel.Id, text, overrideUsername, overrideIconUrl, parsedRequest.Props, webhookType); err != nil {
-		c.Err = err
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte("ok"))
 }
