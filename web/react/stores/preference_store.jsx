@@ -23,6 +23,7 @@ class PreferenceStoreClass extends EventEmitter {
         super();
 
         this.getAllPreferences = this.getAllPreferences.bind(this);
+        this.getAllPreferencesFull = this.getAllPreferencesFull.bind(this);
         this.get = this.get.bind(this);
         this.getBool = this.getBool.bind(this);
         this.getInt = this.getInt.bind(this);
@@ -32,16 +33,32 @@ class PreferenceStoreClass extends EventEmitter {
         this.setAllPreferences = this.setAllPreferences.bind(this);
         this.setPreference = this.setPreference.bind(this);
 
+        this.updateCache = this.updateCache.bind(this);
+        this.getAllPreferencesFull = this.getAllPreferencesFull.bind(this);
         this.emitChange = this.emitChange.bind(this);
         this.addChangeListener = this.addChangeListener.bind(this);
         this.removeChangeListener = this.removeChangeListener.bind(this);
 
         this.handleEventPayload = this.handleEventPayload.bind(this);
         this.dispatchToken = AppDispatcher.register(this.handleEventPayload);
+        this.cache = null;
+    }
+
+    getAllPreferencesFull() {
+        return new Map(BrowserStore.getItem('preferences', []));
     }
 
     getAllPreferences() {
-        return new Map(BrowserStore.getItem('preferences', []));
+        if (this.cache) {
+            return this.cache;
+        }
+
+        return this.updateCache();
+    }
+
+    updateCache() {
+        this.cache = this.getAllPreferencesFull();
+        return this.cache;
     }
 
     get(category, name, defaultValue = '') {
@@ -109,10 +126,11 @@ class PreferenceStoreClass extends EventEmitter {
         // note that we store the preferences as an array of key-value pairs so that we can deserialize
         // it as a proper Map instead of an object
         BrowserStore.setItem('preferences', [...preferences]);
+        this.updateCache();
     }
 
     setPreference(category, name, value) {
-        const preferences = this.getAllPreferences();
+        const preferences = new Map(this.getAllPreferences());
 
         const key = getPreferenceKey(category, name);
         let preference = preferences.get(key);
@@ -156,7 +174,7 @@ class PreferenceStoreClass extends EventEmitter {
             break;
         }
         case ActionTypes.RECIEVED_PREFERENCES: {
-            const preferences = this.getAllPreferences();
+            const preferences = new Map(this.getAllPreferences());
 
             for (const preference of action.preferences) {
                 preferences.set(getPreferenceKeyForModel(preference), preference);

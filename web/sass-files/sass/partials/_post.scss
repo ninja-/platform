@@ -219,6 +219,7 @@ body.ios {
 		position: absolute;
 		height: 100%;
 		-webkit-overflow-scrolling: touch;
+		transform: translateZ(0); /* Fix 'repaints on scrool' on chrome */
 		&::-webkit-scrollbar {
 			width: 0px !important;
 		}

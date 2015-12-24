@@ -82,6 +82,18 @@ export default class PostsView extends React.Component {
         const userId = UserStore.getCurrentId();
 
         let renderedLastViewed = false;
+        const commentCounts = new Map();
+
+        for (let x = order.length - 1; x >= 0; x--) {
+            const post = posts[order[x]];
+            const prevPost = posts[order[x + 1]];
+
+            // fast-path for counting comments
+            if (prevPost && Utils.isComment(post)) {
+                var count = commentCounts.get(post.parent_id) || 0;
+                commentCounts.set(post.parent_id, count + 1);
+            }
+        }
 
         for (let i = order.length - 1; i >= 0; i--) {
             const post = posts[order[i]];
@@ -162,6 +174,7 @@ export default class PostsView extends React.Component {
             const keyPrefix = post.id ? post.id : i;
 
             const shouldHighlight = this.props.postsToHighlight && this.props.postsToHighlight.hasOwnProperty(post.id);
+            const commentCount = post.parent_id ? commentCounts.get(post.parent_id) : commentCounts.get(post.id);
 
             const postCtl = (
                 <Post
@@ -175,6 +188,7 @@ export default class PostsView extends React.Component {
                     hideProfilePic={hideProfilePic}
                     isLastComment={isLastComment}
                     shouldHighlight={shouldHighlight}
+                    commentCount={commentCount}
                     onClick={() => EventHelpers.emitPostFocusEvent(post.id)} //eslint-disable-line no-loop-func
                     displayNameType={this.state.displayNameType}
                 />
@@ -184,7 +198,7 @@ export default class PostsView extends React.Component {
             if (currentPostDay.toDateString() !== previousPostDay.toDateString()) {
                 postCtls.push(
                     <div
-                        key={currentPostDay.toDateString()}
+                        key={'seperatorAfter'+post.id}
                         className='date-separator'
                     >
                         <hr className='separator__hr' />
@@ -286,6 +300,7 @@ export default class PostsView extends React.Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
+        PreferenceStore.removeChangeListener(this.updateState);
     }
     componentDidUpdate() {
         if (this.props.postList != null) {
@@ -316,10 +331,13 @@ export default class PostsView extends React.Component {
         if (this.props.messageSeparatorTime !== nextProps.messageSeparatorTime) {
             return true;
         }
-        if (!Utils.areObjectsEqual(this.props.postList, nextProps.postList)) {
+        if (nextState.displayNameType !== this.state.displayNameType) {
             return true;
         }
-        if (nextState.displayNameType !== this.state.displayNameType) {
+        if (this.props !== null && nextProps.postList !== null && this.props.postList.length !== nextProps.postList.length) {
+            return true;
+        }
+        if (Utils.areObjectsEqual(this.props.postList, nextProps.postList)) {
             return true;
         }
 

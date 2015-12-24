@@ -1167,11 +1167,11 @@ export function getShortenedTeamURL() {
 }
 
 export function windowWidth() {
-    return $(window).width();
+    return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 }
 
 export function windowHeight() {
-    return $(window).height();
+    return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 }
 
 export function openDirectChannelToUser(user, successCb, errorCb) {

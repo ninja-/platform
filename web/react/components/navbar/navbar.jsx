@@ -1,31 +1,33 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import EditChannelHeaderModal from './edit_channel_header_modal.jsx';
-import EditChannelPurposeModal from './edit_channel_purpose_modal.jsx';
-import MessageWrapper from './message_wrapper.jsx';
-import NotifyCounts from './notify_counts.jsx';
-import ChannelMembersModal from './channel_members_modal.jsx';
-import ChannelInfoModal from './channel_info_modal.jsx';
-import ChannelInviteModal from './channel_invite_modal.jsx';
-import ChannelNotificationsModal from './channel_notifications_modal.jsx';
-import DeleteChannelModal from './delete_channel_modal.jsx';
-import ToggleModalButton from './toggle_modal_button.jsx';
+import EditChannelHeaderModal from '../edit_channel_header_modal.jsx';
+import EditChannelPurposeModal from '../edit_channel_purpose_modal.jsx';
+import MessageWrapper from '../message_wrapper.jsx';
+import NotifyCounts from '../notify_counts.jsx';
+import ChannelMembersModal from '../channel_members_modal.jsx';
+import ChannelInfoModal from '../channel_info_modal.jsx';
+import ChannelInviteModal from '../channel_invite_modal.jsx';
+import ChannelNotificationsModal from '../channel_notifications_modal.jsx';
+import DeleteChannelModal from '../delete_channel_modal.jsx';
+import ToggleModalButton from '../toggle_modal_button.jsx';
 
-import UserStore from '../stores/user_store.jsx';
-import ChannelStore from '../stores/channel_store.jsx';
-import TeamStore from '../stores/team_store.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import ChannelStore from '../../stores/channel_store.jsx';
+import TeamStore from '../../stores/team_store.jsx';
 
-import * as Client from '../utils/client.jsx';
-import * as AsyncClient from '../utils/async_client.jsx';
-import * as Utils from '../utils/utils.jsx';
+import * as Client from '../../utils/client.jsx';
+import * as AsyncClient from '../../utils/async_client.jsx';
+import * as Utils from '../../utils/utils.jsx';
 
-import Constants from '../utils/constants.jsx';
+import Constants from '../../utils/constants.jsx';
 const ActionTypes = Constants.ActionTypes;
-import AppDispatcher from '../dispatcher/app_dispatcher.jsx';
+import AppDispatcher from '../../dispatcher/app_dispatcher.jsx';
 
 const Popover = ReactBootstrap.Popover;
 const OverlayTrigger = ReactBootstrap.OverlayTrigger;
+
+// navbar is a menu with actions related to the currently loaded channel
 
 export default class Navbar extends React.Component {
     constructor(props) {

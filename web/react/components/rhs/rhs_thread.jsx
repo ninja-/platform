@@ -1,17 +1,17 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import PostStore from '../stores/post_store.jsx';
-import UserStore from '../stores/user_store.jsx';
-import PreferenceStore from '../stores/preference_store.jsx';
-import * as Utils from '../utils/utils.jsx';
-import SearchBox from './search_bar.jsx';
-import CreateComment from './create_comment.jsx';
+import PostStore from '../../stores/post_store.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import PreferenceStore from '../../stores/preference_store.jsx';
+import * as Utils from '../../utils/utils.jsx';
+import SearchBox from '../search_bar.jsx';
+import CreateComment from '../create_comment.jsx';
 import RhsHeaderPost from './rhs_header_post.jsx';
 import RootPost from './rhs_root_post.jsx';
 import Comment from './rhs_comment.jsx';
-import Constants from '../utils/constants.jsx';
-import FileUploadOverlay from './file_upload_overlay.jsx';
+import Constants from '../../utils/constants.jsx';
+import FileUploadOverlay from '../file_upload_overlay.jsx';
 
 export default class RhsThread extends React.Component {
     constructor(props) {
@@ -207,11 +207,11 @@ export default class RhsThread extends React.Component {
                             commentCount={postsArray.length}
                         />
                         <div className='post-right-comments-container'>
-                        {postsArray.map(function mapPosts(comPost) {
+                        {postsArray.map(function mapPosts(comPost, i) {
                             return (
                                 <Comment
                                     ref={comPost.id}
-                                    key={comPost.id + 'commentKey'}
+                                    key={(comPost.id ? comPost.id : i) + "commentKey"}
                                     post={comPost}
                                     selected={(comPost.id === selectedPost.id)}
                                 />

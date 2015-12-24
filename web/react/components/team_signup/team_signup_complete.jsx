@@ -7,9 +7,9 @@ import TeamURLPage from './team_signup_url_page.jsx';
 import SendInivtesPage from './team_signup_send_invites_page.jsx';
 import UsernamePage from './team_signup_username_page.jsx';
 import PasswordPage from './team_signup_password_page.jsx';
-import BrowserStore from '../stores/browser_store.jsx';
+import BrowserStore from '../../stores/browser_store.jsx';
 
-export default class SignupTeamComplete extends React.Component {
+export default class TeamSignupComplete extends React.Component {
     constructor(props) {
         super(props);
 
@@ -100,12 +100,12 @@ export default class SignupTeamComplete extends React.Component {
     }
 }
 
-SignupTeamComplete.defaultProps = {
+TeamSignupComplete.defaultProps = {
     hash: '',
     email: '',
     data: ''
 };
-SignupTeamComplete.propTypes = {
+TeamSignupComplete.propTypes = {
     hash: React.PropTypes.string,
     email: React.PropTypes.string,
     data: React.PropTypes.string

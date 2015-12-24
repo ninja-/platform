@@ -7,7 +7,6 @@ import LoadingScreen from './loading_screen.jsx';
 import ChannelStore from '../stores/channel_store.jsx';
 import PostStore from '../stores/post_store.jsx';
 
-import * as Utils from '../utils/utils.jsx';
 import * as EventHelpers from '../dispatcher/event_helpers.jsx';
 
 import Constants from '../utils/constants.jsx';
@@ -147,13 +146,6 @@ export default class PostsViewContainer extends React.Component {
         } else {
             this.setState({scrollType: PostsView.SCROLL_TYPE_FREE});
         }
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        if (Utils.areObjectsEqual(this.state, nextState)) {
-            return false;
-        }
-
-        return true;
     }
     render() {
         const postLists = this.state.postLists;

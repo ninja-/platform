@@ -1,20 +1,20 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import PostStore from '../stores/post_store.jsx';
-import ChannelStore from '../stores/channel_store.jsx';
-import UserProfile from './user_profile.jsx';
-import UserStore from '../stores/user_store.jsx';
-import AppDispatcher from '../dispatcher/app_dispatcher.jsx';
-import * as Utils from '../utils/utils.jsx';
-import Constants from '../utils/constants.jsx';
-import FileAttachmentList from './file_attachment_list.jsx';
-import * as Client from '../utils/client.jsx';
-import * as AsyncClient from '../utils/async_client.jsx';
+import PostStore from '../../stores/post_store.jsx';
+import ChannelStore from '../../stores/channel_store.jsx';
+import UserProfile from '../user_profile.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import AppDispatcher from '../../dispatcher/app_dispatcher.jsx';
+import * as Utils from '../../utils/utils.jsx';
+import Constants from '../../utils/constants.jsx';
+import FileAttachmentList from '../file_attachment_list.jsx';
+import * as Client from '../../utils/client.jsx';
+import * as AsyncClient from '../../utils/async_client.jsx';
 var ActionTypes = Constants.ActionTypes;
-import * as TextFormatting from '../utils/text_formatting.jsx';
+import * as TextFormatting from '../../utils/text_formatting.jsx';
 import twemoji from 'twemoji';
-import * as EventHelpers from '../dispatcher/event_helpers.jsx';
+import * as EventHelpers from '../../dispatcher/event_helpers.jsx';
 
 export default class RhsComment extends React.Component {
     constructor(props) {

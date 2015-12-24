@@ -1,18 +1,18 @@
 // Copyright (c) 2015 Mattermost, Inc. All Rights Reserved.
 // See License.txt for license information.
 
-import ChannelStore from '../stores/channel_store.jsx';
-import UserProfile from './user_profile.jsx';
-import UserStore from '../stores/user_store.jsx';
-import * as TextFormatting from '../utils/text_formatting.jsx';
-import * as utils from '../utils/utils.jsx';
-import * as Emoji from '../utils/emoticons.jsx';
-import FileAttachmentList from './file_attachment_list.jsx';
+import ChannelStore from '../../stores/channel_store.jsx';
+import UserProfile from '../user_profile.jsx';
+import UserStore from '../../stores/user_store.jsx';
+import * as TextFormatting from '../../utils/text_formatting.jsx';
+import * as utils from '../../utils/utils.jsx';
+import * as Emoji from '../../utils/emoticons.jsx';
+import FileAttachmentList from '../file_attachment_list.jsx';
 import twemoji from 'twemoji';
-import PostBodyAdditionalContent from './post_body_additional_content.jsx';
-import * as EventHelpers from '../dispatcher/event_helpers.jsx';
+import PostBodyAdditionalContent from '../post_body_additional_content.jsx';
+import * as EventHelpers from '../../dispatcher/event_helpers.jsx';
 
-import Constants from '../utils/constants.jsx';
+import Constants from '../../utils/constants.jsx';
 
 export default class RhsRootPost extends React.Component {
     constructor(props) {

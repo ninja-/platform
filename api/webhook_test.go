@@ -333,6 +333,51 @@ func TestRegenOutgoingHookToken(t *testing.T) {
 	}
 }
 
+func TestIncomingWebhook(t *testing.T) {
+	Setup()
+
+	team := &model.Team{DisplayName: "Name", Name: "z-z-" + model.NewId() + "a", Email: "test@nowhere.com", Type: model.TEAM_OPEN}
+	team = Client.Must(Client.CreateTeam(team)).Data.(*model.Team)
+
+	user := &model.User{TeamId: team.Id, Email: model.NewId() + "corey+test@test.com", Nickname: "Corey Hulen", Password: "pwd"}
+	user = Client.Must(Client.CreateUser(user, "")).Data.(*model.User)
+	store.Must(Srv.Store.User().VerifyEmail(user.Id))
+
+	Client.LoginByEmail(team.Name, user.Email, "pwd")
+
+	channel1 := &model.Channel{DisplayName: "Test API Name", Name: "a" + model.NewId() + "a", Type: model.CHANNEL_OPEN, TeamId: team.Id}
+	channel1 = Client.Must(Client.CreateChannel(channel1)).Data.(*model.Channel)
+
+	if utils.Cfg.ServiceSettings.EnableIncomingWebhooks {
+		hook1 := &model.IncomingWebhook{ChannelId: channel1.Id}
+		hook1 = Client.Must(Client.CreateIncomingWebhook(hook1)).Data.(*model.IncomingWebhook)
+
+		payload := "payload={\"text\": \"test text\"}"
+		if _, err := Client.PostToWebhook(hook1.Id, payload); err != nil {
+			t.Fatal(err)
+		}
+
+		payload = "payload={\"text\": \"\"}"
+		if _, err := Client.PostToWebhook(hook1.Id, payload); err == nil {
+			t.Fatal("should have errored - no text to post")
+		}
+
+		payload = "payload={\"text\": \"test text\", \"channel\": \"junk\"}"
+		if _, err := Client.PostToWebhook(hook1.Id, payload); err == nil {
+			t.Fatal("should have errored - bad channel")
+		}
+
+		payload = "payload={\"text\": \"test text\"}"
+		if _, err := Client.PostToWebhook("abc123", payload); err == nil {
+			t.Fatal("should have errored - bad hook")
+		}
+	} else {
+		if _, err := Client.PostToWebhook("123", "123"); err == nil {
+			t.Fatal("should have failed - webhooks turned off")
+		}
+	}
+}
+
 func TestZZWebSocketTearDown(t *testing.T) {
 	// *IMPORTANT* - Kind of hacky
 	// This should be the last function in any test file
