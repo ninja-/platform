@@ -69,7 +69,7 @@ func InitWeb() {
 	mainrouter.Handle("/signup_user_complete/", api.AppHandlerIndependent(signupUserComplete)).Methods("GET")
 	mainrouter.Handle("/signup_team_confirm/", api.AppHandlerIndependent(signupTeamConfirm)).Methods("GET")
 	mainrouter.Handle("/verify_email", api.AppHandlerIndependent(verifyEmail)).Methods("GET")
-	mainrouter.Handle("/find_team", api.AppHandlerIndependent(findTeam)).Methods("GET")
+	mainrouter.Handle("/find_team", api.AppHandlerIndependent(unifiedClient)).Methods("GET")
 	mainrouter.Handle("/signup_team", api.AppHandlerIndependent(signup)).Methods("GET")
 	mainrouter.Handle("/login/{service:[A-Za-z]+}/complete", api.AppHandlerIndependent(loginCompleteOAuth)).Methods("GET")
 	mainrouter.Handle("/signup/{service:[A-Za-z]+}/complete", api.AppHandlerIndependent(signupCompleteOAuth)).Methods("GET")

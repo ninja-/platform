@@ -2,12 +2,17 @@
 // See License.txt for license information.
 
 import FindTeam from '../components/find_team.jsx';
+import WhitePage from '../components/templates/white_page.jsx';
 
-function setupFindTeamPage() {
-    ReactDOM.render(
-        <FindTeam />,
-        document.getElementById('find-team')
-    );
+export default class FindTeamPage extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+      return (
+        <WhitePage>
+            <FindTeam/>
+        </WhitePage>
+      );
+    }
 }
-
-global.window.setup_find_team_page = setupFindTeamPage;

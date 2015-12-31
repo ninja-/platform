@@ -57,34 +57,32 @@ export default class PasswordResetSendLink extends React.Component {
         }
 
         return (
-            <div className='col-sm-12'>
-                <div className='signup-team__container'>
-                    <h3>Password Reset</h3>
-                    {updateText}
-                    <form
-                        onSubmit={this.handleSendLink}
-                        ref='reset_form'
+            <div>
+                <h3>Password Reset</h3>
+                {updateText}
+                <form
+                    onSubmit={this.handleSendLink}
+                    ref='reset_form'
+                >
+                    <p>{'To reset your password, enter the email address you used to sign up for '} <b>{this.props.teamDisplayName}</b>{'.'}</p>
+                    <div className={formClass}>
+                        <input
+                            type='email'
+                            className='form-control'
+                            name='email'
+                            ref='email'
+                            placeholder='Email'
+                            spellCheck='false'
+                        />
+                    </div>
+                    {error}
+                    <button
+                        type='submit'
+                        className='btn btn-primary'
                     >
-                        <p>{'To reset your password, enter the email address you used to sign up for '} <b>{this.props.teamDisplayName}</b>{'.'}</p>
-                        <div className={formClass}>
-                            <input
-                                type='email'
-                                className='form-control'
-                                name='email'
-                                ref='email'
-                                placeholder='Email'
-                                spellCheck='false'
-                            />
-                        </div>
-                        {error}
-                        <button
-                            type='submit'
-                            className='btn btn-primary'
-                        >
-                            Reset my password
-                        </button>
-                    </form>
-                </div>
+                        Reset my password
+                    </button>
+                </form>
             </div>
         );
     }

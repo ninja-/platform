@@ -3,20 +3,6 @@
 
 import PasswordReset from '../components/password_reset.jsx';
 import WhitePage from '../components/templates/white_page.jsx';
-function setupPasswordResetPage(props) {
-    ReactDOM.render(
-        <PasswordReset
-            isReset={props.IsReset}
-            teamDisplayName={props.TeamDisplayName}
-            teamName={props.TeamName}
-            hash={props.Hash}
-            data={props.Data}
-        />,
-        document.getElementById('reset')
-    );
-}
-
-global.window.setup_password_reset_page = setupPasswordResetPage;
 
 export default class PasswordResetPage extends React.Component {
     constructor(props) {

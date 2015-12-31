@@ -57,31 +57,29 @@ export default class PasswordResetForm extends React.Component {
         }
 
         return (
-            <div className='col-sm-12'>
-                <div className='signup-team__container'>
-                    <h3>Password Reset</h3>
-                    <form onSubmit={this.handlePasswordReset}>
-                        <p>{'Enter a new password for your ' + this.props.teamDisplayName + ' ' + this.props.siteName + ' account.'}</p>
-                        <div className={formClass}>
-                            <input
-                                type='password'
-                                className='form-control'
-                                name='password'
-                                ref='password'
-                                placeholder='Password'
-                                spellCheck='false'
-                            />
-                        </div>
-                        {error}
-                        <button
-                            type='submit'
-                            className='btn btn-primary'
-                        >
-                            Change my password
-                        </button>
-                        {updateText}
-                    </form>
-                </div>
+            <div>
+                <h3>Password Reset</h3>
+                <form onSubmit={this.handlePasswordReset}>
+                    <p>{'Enter a new password for your ' + this.props.teamDisplayName + ' ' + this.props.siteName + ' account.'}</p>
+                    <div className={formClass}>
+                        <input
+                            type='password'
+                            className='form-control'
+                            name='password'
+                            ref='password'
+                            placeholder='Password'
+                            spellCheck='false'
+                        />
+                    </div>
+                    {error}
+                    <button
+                        type='submit'
+                        className='btn btn-primary'
+                    >
+                        Change my password
+                    </button>
+                    {updateText}
+                </form>
             </div>
         );
     }

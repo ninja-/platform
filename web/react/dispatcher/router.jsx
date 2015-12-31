@@ -12,6 +12,7 @@ var IndexRoute = ReactRouter.Link
 var browserHistory = ReactRouter.browserHistory
 
 import PasswordResetPage from '../pages/password_reset.jsx';
+import FindTeamPage from '../pages/find_team.jsx';
 import App from './app.jsx';
 
 
@@ -29,6 +30,7 @@ export default class MattermostRouter extends React.Component {
 
             <Route path="/" component={App}>
               <Route path="/:team/reset_password" component={PasswordResetPage}/>
+              <Route path="/find_team" component={FindTeamPage}/>
             </Route>
           </Router>
         );
