@@ -575,65 +575,12 @@ func verifyEmail(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	page.Render(c, w)
 }
 
-func findTeam(c *api.Context, w http.ResponseWriter, r *http.Request) {
-	page := NewHtmlTemplatePage("find_team", "Find Team")
-	page.Render(c, w)
-}
-
 func docs(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	doc := params["doc"]
 
 	page := NewHtmlTemplatePage("docs", "Documentation")
 	page.Props["Site"] = doc
-	page.Render(c, w)
-}
-
-func resetPassword(c *api.Context, w http.ResponseWriter, r *http.Request) {
-	isResetLink := true
-	hash := r.URL.Query().Get("h")
-	data := r.URL.Query().Get("d")
-	params := mux.Vars(r)
-	teamName := params["team"]
-
-	if len(hash) == 0 || len(data) == 0 {
-		isResetLink = false
-	} else {
-		if !model.ComparePassword(hash, fmt.Sprintf("%v:%v", data, utils.Cfg.EmailSettings.PasswordResetSalt)) {
-			c.Err = model.NewAppError("resetPassword", "The reset link does not appear to be valid", "")
-			return
-		}
-
-		props := model.MapFromJson(strings.NewReader(data))
-
-		t, err := strconv.ParseInt(props["time"], 10, 64)
-		if err != nil || model.GetMillis()-t > 1000*60*60 { // one hour
-			c.Err = model.NewAppError("resetPassword", "The signup link has expired", "")
-			return
-		}
-	}
-
-	teamDisplayName := "Developer/Beta"
-	var team *model.Team
-	if tResult := <-api.Srv.Store.Team().GetByName(teamName); tResult.Err != nil {
-		c.Err = tResult.Err
-		return
-	} else {
-		team = tResult.Data.(*model.Team)
-	}
-
-	if team != nil {
-		teamDisplayName = team.DisplayName
-	}
-
-	page := NewHtmlTemplatePage("password_reset", "")
-	page.Props["Title"] = "Reset Password " + page.ClientCfg["SiteName"]
-	page.Props["TeamDisplayName"] = teamDisplayName
-	page.Props["TeamName"] = teamName
-	page.Props["Hash"] = hash
-	page.Props["Data"] = data
-	page.Props["TeamName"] = teamName
-	page.Props["IsReset"] = strconv.FormatBool(isResetLink)
 	page.Render(c, w)
 }
 
