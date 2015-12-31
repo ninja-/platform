@@ -11,7 +11,7 @@ export default class PasswordReset extends React.Component {
         this.state = {};
     }
     render() {
-        if (this.props.isReset === 'false') {
+        if (!this.props.isReset) {
             return (
                 <PasswordResetSendLink
                     teamDisplayName={this.props.teamDisplayName}
@@ -39,7 +39,7 @@ PasswordReset.defaultProps = {
     data: ''
 };
 PasswordReset.propTypes = {
-    isReset: React.PropTypes.string,
+    isReset: React.PropTypes.bool,
     teamName: React.PropTypes.string,
     teamDisplayName: React.PropTypes.string,
     hash: React.PropTypes.string,
