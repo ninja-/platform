@@ -1288,6 +1288,20 @@ export function savePreferences(preferences, success, error) {
         }
     });
 }
+export function fetchPublicTeamMetadata(team, success, error) {
+    $.ajax({
+        url: '/api/v1/teams/public_metadata',
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'POST',
+        data: JSON.stringify({name:team}),
+        success,
+        error: (xhr, status, err) => {
+            var e = handleError('fetchPublicTeamMetadata', xhr, status, err);
+            error(e);
+        }
+    });
+}
 
 export function addOutgoingHook(hook, success, error) {
     $.ajax({

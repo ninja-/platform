@@ -65,7 +65,7 @@ export default class PasswordResetSendLink extends React.Component {
                         onSubmit={this.handleSendLink}
                         ref='reset_form'
                     >
-                        <p>{'To reset your password, enter the email address you used to sign up for ' + this.props.teamDisplayName + '.'}</p>
+                        <p>{'To reset your password, enter the email address you used to sign up for '} <b>{this.props.teamDisplayName}</b>{'.'}</p>
                         <div className={formClass}>
                             <input
                                 type='email'

@@ -25,13 +25,12 @@ export default class PasswordResetPage extends React.Component {
     render() {
       var hash = this.props.location.query['h'];
       var data = this.props.location.query['d'];
-      var isReset = (hash && data);
+      var isReset = !!(hash && data);
 
       var reset =
         <PasswordReset
             teamName={this.props.params.team}
             isReset={isReset}
-            teamDisplayName={'Cool team'}
             hash={hash}
             data={data}
         />;
