@@ -69,7 +69,7 @@ func InitWeb() {
 	mainrouter.Handle("/signup_user_complete/", api.AppHandlerIndependent(signupUserComplete)).Methods("GET")
 	mainrouter.Handle("/signup_team_confirm/", api.AppHandlerIndependent(signupTeamConfirm)).Methods("GET")
 	mainrouter.Handle("/verify_email", api.AppHandlerIndependent(verifyEmail)).Methods("GET")
-	mainrouter.Handle("/find_team", api.AppHandlerIndependent(findTeam)).Methods("GET")
+	mainrouter.Handle("/find_team", api.AppHandlerIndependent(unifiedClient)).Methods("GET")
 	mainrouter.Handle("/signup_team", api.AppHandlerIndependent(signup)).Methods("GET")
 	mainrouter.Handle("/login/{service:[A-Za-z]+}/complete", api.AppHandlerIndependent(loginCompleteOAuth)).Methods("GET")
 	mainrouter.Handle("/signup/{service:[A-Za-z]+}/complete", api.AppHandlerIndependent(signupCompleteOAuth)).Methods("GET")
@@ -89,7 +89,7 @@ func InitWeb() {
 	mainrouter.Handle("/{team:[A-Za-z0-9-]+(__)?[A-Za-z0-9-]+}/", api.AppHandler(login)).Methods("GET")
 	mainrouter.Handle("/{team:[A-Za-z0-9-]+(__)?[A-Za-z0-9-]+}/login", api.AppHandler(login)).Methods("GET")
 	mainrouter.Handle("/{team:[A-Za-z0-9-]+(__)?[A-Za-z0-9-]+}/logout", api.AppHandler(logout)).Methods("GET")
-	mainrouter.Handle("/{team:[A-Za-z0-9-]+(__)?[A-Za-z0-9-]+}/reset_password", api.AppHandler(resetPassword)).Methods("GET")
+	mainrouter.Handle("/{team:[A-Za-z0-9-]+(__)?[A-Za-z0-9-]+}/reset_password", api.AppHandler(unifiedClient)).Methods("GET")
 	mainrouter.Handle("/{team}/pl/{postid}", api.AppHandler(postPermalink)).Methods("GET")         // Bug in gorilla.mux prevents us from using regex here.
 	mainrouter.Handle("/{team}/login/{service}", api.AppHandler(loginWithOAuth)).Methods("GET")    // Bug in gorilla.mux prevents us from using regex here.
 	mainrouter.Handle("/{team}/channels/{channelname}", api.AppHandler(getChannel)).Methods("GET") // Bug in gorilla.mux prevents us from using regex here.
@@ -575,11 +575,6 @@ func verifyEmail(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	page.Render(c, w)
 }
 
-func findTeam(c *api.Context, w http.ResponseWriter, r *http.Request) {
-	page := NewHtmlTemplatePage("find_team", "Find Team")
-	page.Render(c, w)
-}
-
 func docs(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	doc := params["doc"]
@@ -589,51 +584,8 @@ func docs(c *api.Context, w http.ResponseWriter, r *http.Request) {
 	page.Render(c, w)
 }
 
-func resetPassword(c *api.Context, w http.ResponseWriter, r *http.Request) {
-	isResetLink := true
-	hash := r.URL.Query().Get("h")
-	data := r.URL.Query().Get("d")
-	params := mux.Vars(r)
-	teamName := params["team"]
-
-	if len(hash) == 0 || len(data) == 0 {
-		isResetLink = false
-	} else {
-		if !model.ComparePassword(hash, fmt.Sprintf("%v:%v", data, utils.Cfg.EmailSettings.PasswordResetSalt)) {
-			c.Err = model.NewAppError("resetPassword", "The reset link does not appear to be valid", "")
-			return
-		}
-
-		props := model.MapFromJson(strings.NewReader(data))
-
-		t, err := strconv.ParseInt(props["time"], 10, 64)
-		if err != nil || model.GetMillis()-t > 1000*60*60 { // one hour
-			c.Err = model.NewAppError("resetPassword", "The signup link has expired", "")
-			return
-		}
-	}
-
-	teamDisplayName := "Developer/Beta"
-	var team *model.Team
-	if tResult := <-api.Srv.Store.Team().GetByName(teamName); tResult.Err != nil {
-		c.Err = tResult.Err
-		return
-	} else {
-		team = tResult.Data.(*model.Team)
-	}
-
-	if team != nil {
-		teamDisplayName = team.DisplayName
-	}
-
-	page := NewHtmlTemplatePage("password_reset", "")
-	page.Props["Title"] = "Reset Password " + page.ClientCfg["SiteName"]
-	page.Props["TeamDisplayName"] = teamDisplayName
-	page.Props["TeamName"] = teamName
-	page.Props["Hash"] = hash
-	page.Props["Data"] = data
-	page.Props["TeamName"] = teamName
-	page.Props["IsReset"] = strconv.FormatBool(isResetLink)
+func unifiedClient(c *api.Context, w http.ResponseWriter, r *http.Request) {
+	page := NewHtmlTemplatePage("unified", "")
 	page.Render(c, w)
 }
 
@@ -764,10 +716,7 @@ func signupCompleteOAuth(c *api.Context, w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		page := NewHtmlTemplatePage("home", "Home")
-		page.Team = team
-		page.User = ruser
-		page.Render(c, w)
+		http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name+"/", http.StatusTemporaryRedirect)
 	}
 }
 
@@ -833,12 +782,7 @@ func loginCompleteOAuth(c *api.Context, w http.ResponseWriter, r *http.Request) 
 				return
 			}
 
-			page := NewHtmlTemplatePage("home", "Home")
-			page.Team = team
-			page.User = user
-			page.Render(c, w)
-
-			root(c, w, r)
+			http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name+"/", http.StatusTemporaryRedirect)
 		}
 	}
 }
@@ -858,7 +802,6 @@ func adminConsole(c *api.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		team = tr.Data.(*model.Team)
-
 	}
 
 	var user *model.User

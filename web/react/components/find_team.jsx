@@ -58,7 +58,7 @@ export default class FindTeam extends React.Component {
 
         return (
         <div>
-                <h4>Find Your Team</h4>
+                <h3>Find Your Team</h3>
                 <form onSubmit={this.handleSubmit}>
                     <p>{'Get an email with links to any teams to which you are a member.'}</p>
                     <div className='form-group'>
@@ -82,7 +82,7 @@ export default class FindTeam extends React.Component {
                         Send
                     </button>
                 </form>
-                </div>
-        );
+        </div>
+);
     }
 }

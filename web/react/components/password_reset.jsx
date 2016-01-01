@@ -3,6 +3,7 @@
 
 import PasswordResetSendLink from './password_reset_send_link.jsx';
 import PasswordResetForm from './password_reset_form.jsx';
+import * as Client from '../utils/client.jsx';
 
 export default class PasswordReset extends React.Component {
     constructor(props) {
@@ -10,11 +11,21 @@ export default class PasswordReset extends React.Component {
 
         this.state = {};
     }
+
+    componentWillMount() {
+        this.setState({isLoading: true})
+        Client.fetchPublicTeamMetadata(this.props.teamName, (result) =>
+            this.setState({isLoading: false, teamDisplayName: result.display_name, siteName: result.site_name})
+        );
+    }
+
     render() {
-        if (this.props.isReset === 'false') {
+        console.log(this.state)
+        if (!this.props.isReset) {
             return (
                 <PasswordResetSendLink
-                    teamDisplayName={this.props.teamDisplayName}
+                    teamDisplayName={this.state.teamDisplayName || this.props.teamDisplayName}
+                    siteName={this.state.siteName || "Mattermost"}
                     teamName={this.props.teamName}
                 />
             );
@@ -22,10 +33,11 @@ export default class PasswordReset extends React.Component {
 
         return (
             <PasswordResetForm
-                teamDisplayName={this.props.teamDisplayName}
+              teamDisplayName={this.state.teamDisplayName || this.props.teamDisplayName}
                 teamName={this.props.teamName}
                 hash={this.props.hash}
                 data={this.props.data}
+                siteName={this.state.siteName || "Mattermost"}
             />
         );
     }
@@ -39,7 +51,7 @@ PasswordReset.defaultProps = {
     data: ''
 };
 PasswordReset.propTypes = {
-    isReset: React.PropTypes.string,
+    isReset: React.PropTypes.bool,
     teamName: React.PropTypes.string,
     teamDisplayName: React.PropTypes.string,
     hash: React.PropTypes.string,

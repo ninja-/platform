@@ -35,6 +35,32 @@ func InitTeam(r *mux.Router) {
 	// These should be moved to the global admain console
 	sr.Handle("/import_team", ApiUserRequired(importTeam)).Methods("POST")
 	sr.Handle("/export_team", ApiUserRequired(exportTeam)).Methods("GET")
+	sr.Handle("/public_metadata", ApiAppHandler(publicMetadata)).Methods("POST")
+}
+
+func publicMetadata(c *Context, w http.ResponseWriter, r *http.Request) {
+	props := make(map[string]string)
+
+	team := model.TeamFromJson(r.Body)
+
+	if team.Name == "" || len(team.Name) > 64 {
+		c.SetInvalidParam("findTeamByName", "domain")
+		return
+	}
+
+	if result := <-Srv.Store.Team().GetByName(team.Name); result.Err != nil {
+		c.SetInvalidParam("publicMetadata", "team")
+
+	} else {
+		rteam := result.Data.(*model.Team)
+		props["display_name"] = rteam.DisplayName
+		props["name"] = rteam.Name
+		if rteam.AllowOpenInvite {
+			props["invite_id"] = rteam.InviteId
+		}
+		props["site_name"] = utils.Cfg.TeamSettings.SiteName
+		w.Write([]byte(model.MapToJson(props)))
+	}
 }
 
 func signupTeam(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -641,7 +667,7 @@ func importTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = model.NewAppError("importTeam", "Only a team admin can import data.", "userId="+c.Session.UserId)
 		c.Err.StatusCode = http.StatusForbidden
 		return
-	}
+}
 
 	if err := r.ParseMultipartForm(10000000); err != nil {
 		c.Err = model.NewAppError("importTeam", "Could not parse multipart form", err.Error())
