@@ -716,10 +716,7 @@ func signupCompleteOAuth(c *api.Context, w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		page := NewHtmlTemplatePage("home", "Home")
-		page.Team = team
-		page.User = ruser
-		page.Render(c, w)
+		http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name+"/", http.StatusTemporaryRedirect)
 	}
 }
 
@@ -785,12 +782,7 @@ func loginCompleteOAuth(c *api.Context, w http.ResponseWriter, r *http.Request) 
 				return
 			}
 
-			page := NewHtmlTemplatePage("home", "Home")
-			page.Team = team
-			page.User = user
-			page.Render(c, w)
-
-			root(c, w, r)
+			http.Redirect(w, r, c.GetSiteURL()+"/"+team.Name+"/", http.StatusTemporaryRedirect)
 		}
 	}
 }
@@ -810,7 +802,6 @@ func adminConsole(c *api.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		team = tr.Data.(*model.Team)
-
 	}
 
 	var user *model.User
